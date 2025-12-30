@@ -58,12 +58,12 @@ if ($project_type eq 'perl') {
 path($output_file)->spew_utf8($yaml);
 
 say colored(['green'], "✓ ") . "Generated workflow: " . colored(['bold'], $output_file);
-say "";
+say '';
 say colored(['cyan'], "Next steps:");
 say "  1. Review the generated workflow";
 say "  2. Customize it for your project";
 say "  3. Commit and push to trigger the workflow";
-say "";
+say '';
 say colored(['yellow'], "💡 Tip: ") . "Run '../ghgen-analyze' to check for additional optimizations";
 
 exit 0;
@@ -83,7 +83,7 @@ sub generate_workflow($type) {
         docker   => \&generate_docker_workflow,
         static   => \&generate_static_workflow,
     );
-    
+
     return undef unless exists $generators{$type};
     return $generators{$type}->();
 }
@@ -598,8 +598,8 @@ sub generate_static_workflow() {
 
 sub list_available_types() {
     say colored(['bold cyan'], "Available workflow templates:");
-    say "";
-    
+    say '';
+
     my @types = (
         ['node',    'Node.js/npm projects with testing and linting'],
         ['python',  'Python projects with pytest and coverage'],
@@ -610,12 +610,12 @@ sub list_available_types() {
         ['docker',  'Docker image build and push workflow'],
         ['static',  'Static site deployment to GitHub Pages'],
     );
-    
+
     for my $type (@types) {
         say "  " . colored(['green'], sprintf("%-10s", $type->[0])) . " - $type->[1]";
     }
-    
-    say "";
+
+    say '';
     say "Usage: $0 --type=<type> [--output=<file>]";
     say "   or: $0 --interactive";
 }
@@ -623,10 +623,10 @@ sub list_available_types() {
 sub interactive_select_type() {
     say colored(['bold cyan'], "GitHub Actions Workflow Generator");
     say colored(['cyan'], "=" x 50);
-    say "";
+    say '';
     say "Select a project type:";
-    say "";
-    
+    say '';
+
     my @types = qw(node python rust go ruby perl docker static);
     my %descriptions = (
         node   => 'Node.js/npm',
@@ -638,34 +638,34 @@ sub interactive_select_type() {
         docker => 'Docker',
         static => 'Static site (GitHub Pages)',
     );
-    
+
     for my $i (0..$#types) {
         say "  " . colored(['green'], $i + 1) . ". $descriptions{$types[$i]}";
     }
-    
-    say "";
+
+    say '';
     print "Enter number (1-" . scalar(@types) . "): ";
     chomp(my $choice = <STDIN>);
-    
+
     if ($choice =~ /^\d+$/ && $choice >= 1 && $choice <= @types) {
         return $types[$choice - 1];
     }
-    
+
     die colored(['red'], "Invalid choice\n");
 }
 
 sub fix_yaml_formatting($yaml) {
     # Fix common yamllint issues that YAML::XS produces
-    
+ 
     # Replace Perl boolean references with proper YAML booleans
     $yaml =~ s/: '1'/: true/g;
     $yaml =~ s/: '0'/: false/g;
     $yaml =~ s/: 1$/: true/gm;
     $yaml =~ s/: 0$/: false/gm;
-    
+ 
     # Ensure proper indentation for 'on:' section (should be at root level)
     $yaml =~ s/^  (on:)/$1/gm;
-    
+
     # Ensure proper indentation for top-level keys
     $yaml =~ s/^  (name:|on:|concurrency:|jobs:|permissions:)/$1/gm;
     
@@ -679,9 +679,10 @@ sub fix_yaml_formatting($yaml) {
 
 sub generate_perl_yaml() {
     return <<'YAML';
+---
 name: Perl CI
 
-on:
+'on':
   push:
     branches:
       - main
