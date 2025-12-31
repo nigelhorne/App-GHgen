@@ -48,6 +48,12 @@ App::GHGen helps you create and optimize GitHub Actions workflows. It can:
 
 =item * Docker
 
+=item * Java
+
+=item * C++
+
+=item * PHP
+
 =item * Static sites (GitHub Pages)
 
 =back
@@ -55,6 +61,10 @@ App::GHGen helps you create and optimize GitHub Actions workflows. It can:
 =head1 AUTHOR
 
 Nigel Horne <njh@nigelhorne.com>
+
+=head1 SUPPORT
+
+This module is provided as-is without any warranty.
 
 =head1 LICENCE AND COPYRIGHT
 

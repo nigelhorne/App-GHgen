@@ -27,11 +27,18 @@ App::GHGen helps you create and optimize GitHub Actions workflows. It can:
 - Ruby
 - Perl
 - Docker
+- Java
+- C++
+- PHP
 - Static sites (GitHub Pages)
 
 # AUTHOR
 
 Nigel Horne <njh@nigelhorne.com>
+
+# SUPPORT
+
+This module is provided as-is without any warranty.
 
 # LICENCE AND COPYRIGHT
 
