@@ -33,7 +33,15 @@ App::GHGen helps you create and optimize GitHub Actions workflows. It can:
 
 Nigel Horne <njh@nigelhorne.com>
 
-# LICENSE
+# LICENCE AND COPYRIGHT
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+Copyright 2025 Nigel Horne.
+
+Usage is subject to licence terms.
+
+The licence terms of this software are as follows:
+
+- Personal single user, single computer use: GPL2
+- All other users (including Commercial, Charity, Educational, Government)
+  must apply in writing for a licence for use from Nigel Horne at the
+  above e-mail.
