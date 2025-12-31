@@ -37,7 +37,7 @@ sub detect_perl_requirements() {
         has_dist_ini => 0,
         has_build_pl => 0,
     );
-
+    
     # Check for dependency files
     use Path::Tiny;
     $reqs{has_cpanfile} = path('cpanfile')->exists;
@@ -138,37 +138,44 @@ sub generate_custom_perl_workflow($opts = {}) {
     $yaml .= "            \${{ runner.os }}-\${{ matrix.perl }}-\n\n";
     
     $yaml .= "      - name: Install cpanm and local::lib\n";
+    $yaml .= "        if: runner.os != 'Windows'\n";
     $yaml .= "        run: cpanm --notest --local-lib=~/perl5 local::lib\n\n";
     
+    $yaml .= "      - name: Install cpanm and local::lib (Windows)\n";
+    $yaml .= "        if: runner.os == 'Windows'\n";
+    $yaml .= "        run: cpanm --notest App::cpanminus local::lib\n\n";
+    
     $yaml .= "      - name: Install dependencies\n";
+    $yaml .= "        if: runner.os != 'Windows'\n";
+    $yaml .= "        shell: bash\n";
     $yaml .= "        run: |\n";
     $yaml .= "          eval \$(perl -I ~/perl5/lib/perl5 -Mlocal::lib)\n";
-    $yaml .= "          cpanm --notest --installdeps .\n";
-    $yaml .= "        shell: bash\n";
-    $yaml .= "        if: runner.os != 'Windows'\n\n";
+    $yaml .= "          cpanm --notest --installdeps .\n\n";
     
     $yaml .= "      - name: Install dependencies (Windows)\n";
-    $yaml .= "        run: |\n";
-    $yaml .= "          set PATH=%USERPROFILE%\\perl5\\bin;%PATH%\n";
-    $yaml .= "          set PERL5LIB=%USERPROFILE%\\perl5\\lib\\perl5\n";
-    $yaml .= "          cpanm --notest --installdeps .\n";
+    $yaml .= "        if: runner.os == 'Windows'\n";
     $yaml .= "        shell: cmd\n";
-    $yaml .= "        if: runner.os == 'Windows'\n\n";
+    $yaml .= "        run: |\n";
+    $yaml .= "          \@echo off\n";
+    $yaml .= "          set \"PATH=%USERPROFILE%\\perl5\\bin;%PATH%\"\n";
+    $yaml .= "          set \"PERL5LIB=%USERPROFILE%\\perl5\\lib\\perl5\"\n";
+    $yaml .= "          cpanm --notest --installdeps .\n\n";
     
     $yaml .= "      - name: Run tests\n";
+    $yaml .= "        if: runner.os != 'Windows'\n";
+    $yaml .= "        shell: bash\n";
     $yaml .= "        run: |\n";
     $yaml .= "          eval \$(perl -I ~/perl5/lib/perl5 -Mlocal::lib)\n";
-    $yaml .= "          prove -lr t/\n";
-    $yaml .= "        shell: bash\n";
-    $yaml .= "        if: runner.os != 'Windows'\n\n";
+    $yaml .= "          prove -lr t/\n\n";
     
     $yaml .= "      - name: Run tests (Windows)\n";
-    $yaml .= "        run: |\n";
-    $yaml .= "          set PATH=%USERPROFILE%\\perl5\\bin;%PATH%\n";
-    $yaml .= "          set PERL5LIB=%USERPROFILE%\\perl5\\lib\\perl5\n";
-    $yaml .= "          prove -lr t/\n";
+    $yaml .= "        if: runner.os == 'Windows'\n";
     $yaml .= "        shell: cmd\n";
-    $yaml .= "        if: runner.os == 'Windows'\n\n";
+    $yaml .= "        run: |\n";
+    $yaml .= "          \@echo off\n";
+    $yaml .= "          set \"PATH=%USERPROFILE%\\perl5\\bin;%PATH%\"\n";
+    $yaml .= "          set \"PERL5LIB=%USERPROFILE%\\perl5\\lib\\perl5\"\n";
+    $yaml .= "          prove -lr t/\n\n";
     
     if ($enable_critic) {
         my $latest = $perl_versions[-1];

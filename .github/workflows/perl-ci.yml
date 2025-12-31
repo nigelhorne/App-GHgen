@@ -43,7 +43,7 @@ jobs:
           perl-version: ${{ matrix.perl }}
 
       - name: Cache CPAN modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/perl5
           key: ${{ runner.os }}-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
@@ -51,19 +51,44 @@ jobs:
             ${{ runner.os }}-${{ matrix.perl }}-
 
       - name: Install cpanm and local::lib
+        if: runner.os != 'Windows'
         run: cpanm --notest --local-lib=~/perl5 local::lib
 
+      - name: Install cpanm and local::lib (Windows)
+        if: runner.os == 'Windows'
+        run: cpanm --notest App::cpanminus local::lib
+
       - name: Install dependencies
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           eval $(perl -I ~/perl5/lib/perl5 -Mlocal::lib)
           cpanm --notest --installdeps .
-        shell: bash
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          @echo off
+          set "PATH=%USERPROFILE%\perl5\bin;%PATH%"
+          set "PERL5LIB=%USERPROFILE%\perl5\lib\perl5"
+          cpanm --notest --installdeps .
 
       - name: Run tests
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           eval $(perl -I ~/perl5/lib/perl5 -Mlocal::lib)
           prove -lr t/
-        shell: bash
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          @echo off
+          set "PATH=%USERPROFILE%\perl5\bin;%PATH%"
+          set "PERL5LIB=%USERPROFILE%\perl5\lib\perl5"
+          prove -lr t/
 
       - name: Run Perl::Critic
         if: matrix.perl == '5.40' && matrix.os == 'ubuntu-latest'
