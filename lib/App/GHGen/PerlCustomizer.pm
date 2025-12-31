@@ -130,7 +130,7 @@ sub generate_custom_perl_workflow($opts = {}) {
     $yaml .= "          perl-version: \${{ matrix.perl }}\n\n";
     
     $yaml .= "      - name: Cache CPAN modules\n";
-    $yaml .= "        uses: actions/cache\@v4\n";
+    $yaml .= "        uses: actions/cache\@v5\n";
     $yaml .= "        with:\n";
     $yaml .= "          path: ~/perl5\n";
     $yaml .= "          key: \${{ runner.os }}-\${{ matrix.perl }}-\${{ hashFiles('cpanfile') }}\n";

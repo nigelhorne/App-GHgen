@@ -247,21 +247,21 @@ sub get_cache_suggestion($workflow) {
     my $detected_type = detect_project_type($workflow);
     
     my %cache_configs = (
-        npm => "- uses: actions/cache\@v4\n" .
+        npm => "- uses: actions/cache\@v5\n" .
                "       with:\n" .
                "         path: ~/.npm\n" .
                "         key: \${{ runner.os }}-node-\${{ hashFiles('**/package-lock.json') }}\n" .
                "         restore-keys: |\n" .
                "           \${{ runner.os }}-node-",
         
-        pip => "- uses: actions/cache\@v4\n" .
+        pip => "- uses: actions/cache\@v5\n" .
                "       with:\n" .
                "         path: ~/.cache/pip\n" .
                "         key: \${{ runner.os }}-pip-\${{ hashFiles('**/requirements.txt') }}\n" .
                "         restore-keys: |\n" .
                "           \${{ runner.os }}-pip-",
         
-        cargo => "- uses: actions/cache\@v4\n" .
+        cargo => "- uses: actions/cache\@v5\n" .
                  "       with:\n" .
                  "         path: |\n" .
                  "           ~/.cargo/bin/\n" .
@@ -270,7 +270,7 @@ sub get_cache_suggestion($workflow) {
                  "           target/\n" .
                  "         key: \${{ runner.os }}-cargo-\${{ hashFiles('**/Cargo.lock') }}",
         
-        bundler => "- uses: actions/cache\@v4\n" .
+        bundler => "- uses: actions/cache\@v5\n" .
                    "       with:\n" .
                    "         path: vendor/bundle\n" .
                    "         key: \${{ runner.os }}-gems-\${{ hashFiles('**/Gemfile.lock') }}\n" .

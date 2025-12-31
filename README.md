@@ -153,7 +153,7 @@ GitHub Actions Workflow Analyzer
 📄 Analyzing: ci.yml
   ⚠ No dependency caching found - increases build times and costs
      💡 Fix:
-     - uses: actions/cache@v4
+     - uses: actions/cache@v5
        with:
          path: ~/.npm
          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}

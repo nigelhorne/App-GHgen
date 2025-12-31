@@ -125,7 +125,7 @@ sub generate_node_workflow() {
                     },
                     {
                         name => 'Cache dependencies',
-                        uses => 'actions/cache@v4',
+                        uses => 'actions/cache@v5',
                         with => {
                             path => '~/.npm',
                             key => '${{ runner.os }}-node-${{ hashFiles(\'**/package-lock.json\') }}',
@@ -191,7 +191,7 @@ sub generate_python_workflow() {
                     },
                     {
                         name => 'Cache pip packages',
-                        uses => 'actions/cache@v4',
+                        uses => 'actions/cache@v5',
                         with => {
                             path => '~/.cache/pip',
                             key => '${{ runner.os }}-pip-${{ hashFiles(\'**/requirements.txt\') }}',
@@ -245,7 +245,7 @@ sub generate_rust_workflow() {
                     },
                     {
                         name => 'Cache cargo registry',
-                        uses => 'actions/cache@v4',
+                        uses => 'actions/cache@v5',
                         with => {
                             path => "~/.cargo/bin/\n~/.cargo/registry/index/\n~/.cargo/registry/cache/\n~/.cargo/git/db/\ntarget/",
                             key => '${{ runner.os }}-cargo-${{ hashFiles(\'**/Cargo.lock\') }}',
@@ -305,7 +305,7 @@ sub generate_go_workflow() {
                     },
                     {
                         name => 'Cache Go modules',
-                        uses => 'actions/cache@v4',
+                        uses => 'actions/cache@v5',
                         with => {
                             path => '~/go/pkg/mod',
                             key => '${{ runner.os }}-go-${{ hashFiles(\'**/go.sum\') }}',
@@ -424,7 +424,7 @@ sub generate_perl_workflow() {
                     },
                     {
                         name => 'Cache CPAN modules',
-                        uses => 'actions/cache@v4',
+                        uses => 'actions/cache@v5',
                         with => {
                             path => '~/perl5',
                             key => '${{ runner.os }}-${{ matrix.perl }}-${{ hashFiles(\'cpanfile\') }}',
@@ -729,7 +729,7 @@ jobs:
           perl-version: ${{ matrix.perl }}
 
       - name: Cache CPAN modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/perl5
           key: ${{ runner.os }}-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
