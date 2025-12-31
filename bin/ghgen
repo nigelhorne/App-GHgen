@@ -14,281 +14,284 @@ use App::GHGen::Detector qw(detect_project_type get_project_indicators);
 our $VERSION = '0.01';
 
 my %opts = (
-    help    => 0,
-    version => 0,
-    list    => 0,
+	help	=> 0,
+	version => 0,
+	list	=> 0,
 );
 
 GetOptions(
-    'help|h'      => \$opts{help},
-    'version|v'   => \$opts{version},
-    'type|t=s'    => \$opts{type},
-    'output|o=s'  => \$opts{output},
-    'list|l'      => \$opts{list},
-    'interactive|i' => \$opts{interactive},
-    'auto|a'      => \$opts{auto},
+	'help|h'	  => \$opts{help},
+	'version|v'   => \$opts{version},
+	'type|t=s'	=> \$opts{type},
+	'output|o=s'  => \$opts{output},
+	'list|l'	  => \$opts{list},
+	'interactive|i' => \$opts{interactive},
+	'auto|a'	  => \$opts{auto},
 ) or pod2usage(2);
 
 pod2usage(1) if $opts{help};
 
 if ($opts{version}) {
-    say "ghgen version $VERSION";
-    exit 0;
+	say "ghgen version $VERSION";
+	exit 0;
 }
 
 my $command = shift @ARGV // '';
 
 if ($command eq 'generate') {
-    cmd_generate();
+	cmd_generate();
 } elsif ($command eq 'analyze') {
-    cmd_analyze();
+	cmd_analyze();
 } else {
-    pod2usage(-message => "Unknown command: $command", -exitval => 1);
+	pod2usage(-message => "Unknown command: $command", -exitval => 1);
 }
 
 sub cmd_generate() {
-    if ($opts{list}) {
-        list_types();
-        return;
-    }
-    
-    my $type = $opts{type};
-    
-    # Auto-detect if requested
-    if ($opts{auto} || (!$type && !$opts{interactive})) {
-        $type = auto_detect_with_prompt();
-        return unless $type;  # User cancelled
-    }
-    
-    # Interactive mode
-    if ($opts{interactive} && !$type) {
-        $type = interactive_select_type();
-    }
-    
-    unless ($type) {
-        die colored(['red'], "Error: ") .
-            "Please specify --type, use --auto, or use --interactive\n";
-    }
-    
-    my $yaml = generate_workflow($type);
-    
-    unless ($yaml) {
-        die colored(['red'], "Error: ") .
-            "Unknown project type '$type'. Use --list to see options.\n";
-    }
-    
-    # Determine output file
-    my $output_file = $opts{output};
-    unless ($output_file) {
-        my $workflows_dir = path('.github/workflows');
-        $workflows_dir->mkpath unless $workflows_dir->exists;
-        $output_file = $workflows_dir->child("$type-ci.yml");
-    }
-    
-    # Write the workflow
-    path($output_file)->spew_utf8($yaml);
-    
-    say colored(['green'], "✓ ") . "Generated workflow: " . 
-        colored(['bold'], $output_file);
-    say "";
-    say colored(['cyan'], "Next steps:");
-    say "  1. Review the generated workflow";
-    say "  2. Customize it for your project";
-    say "  3. Commit and push to trigger the workflow";
-    say "";
-    say colored(['yellow'], "💡 Tip: ") . 
-        "Run 'ghgen analyze' to check for optimizations";
+	if ($opts{list}) {
+		list_types();
+		return;
+	}
+
+	my $type = $opts{type};
+	
+	# Auto-detect if requested
+	if ($opts{auto} || (!$type && !$opts{interactive})) {
+		$type = auto_detect_with_prompt();
+		return unless $type;  # User cancelled
+	}
+	
+	# Interactive mode
+	if ($opts{interactive} && !$type) {
+		$type = interactive_select_type();
+	}
+	
+	unless ($type) {
+		die colored(['red'], "Error: ") .
+			"Please specify --type, use --auto, or use --interactive\n";
+	}
+	
+	my $yaml = generate_workflow($type);
+	
+	unless ($yaml) {
+		die colored(['red'], "Error: ") .
+			"Unknown project type '$type'. Use --list to see options.\n";
+	}
+	
+	# Determine output file
+	my $output_file = $opts{output};
+	unless ($output_file) {
+		my $workflows_dir = path('.github/workflows');
+		$workflows_dir->mkpath unless $workflows_dir->exists;
+		$output_file = $workflows_dir->child("$type-ci.yml");
+	}
+	
+	# Write the workflow
+	path($output_file)->spew_utf8($yaml);
+	
+	say colored(['green'], "✓ ") . "Generated workflow: " . 
+		colored(['bold'], $output_file);
+	say '';
+	say colored(['cyan'], "Next steps:");
+	say "  1. Review the generated workflow";
+	say "  2. Customize it for your project";
+	say "  3. Commit and push to trigger the workflow";
+	say '';
+	say colored(['yellow'], "💡 Tip: ") . 
+		"Run 'ghgen analyze' to check for optimizations";
 }
 
 sub cmd_analyze() {
-    my @workflow_files = find_workflows();
-    
-    unless (@workflow_files) {
-        die colored(['red'], "Error: ") .
-            "No .github/workflows directory found\n" .
-            "Run this from the root of a repository with GitHub Actions.\n";
-    }
-    
-    say colored(['bold cyan'], "GitHub Actions Workflow Analyzer");
-    say colored(['cyan'], "=" x 50);
-    say "";
-    
-    my @all_issues;
-    my $total_workflows = 0;
-    
-    # Analyze each workflow file
-    for my $file (@workflow_files) {
-        $total_workflows++;
-        say colored(['bold'], "📄 Analyzing: ") . $file->basename;
-        
-        my $workflow;
-        eval { $workflow = LoadFile($file) };
-        if ($@) {
-            say colored(['red'], "  ✗ Failed to parse YAML: $@");
-            next;
-        }
-        
-        my @issues = analyze_workflow($workflow, $file->basename);
-        
-        if (@issues) {
-            for my $issue (@issues) {
-                say "  " . colored(['yellow'], "⚠ ") . $issue->{message};
-                if ($issue->{fix}) {
-                    say colored(['cyan'], "     💡 Fix:");
-                    for my $line (split /\n/, $issue->{fix}) {
-                        say "     " . $line;
-                    }
-                }
-                push @all_issues, { file => $file->basename, %$issue };
-            }
-        } else {
-            say "  " . colored(['green'], "✓ No issues found");
-        }
-        say "";
-    }
-    
-    # Summary
-    say colored(['bold cyan'], "=" x 50);
-    say colored(['bold'], "Summary:");
-    say "  Workflows analyzed: $total_workflows";
-    say "  Total issues found: " . scalar(@all_issues);
-    
-    if (@all_issues) {
-        say "";
-        say colored(['bold yellow'], "Recommendations:");
-        my %by_type;
-        push @{$by_type{$_->{type}}}, $_ for @all_issues;
-        
-        for my $type (sort keys %by_type) {
-            my $count = scalar @{$by_type{$type}};
-            say "  • " . colored(['yellow'], "$type") . 
-                ": $count workflow(s) affected";
-        }
-    }
-    
-    exit(@all_issues ? 1 : 0);
+	my @workflow_files = find_workflows();
+	
+	unless (@workflow_files) {
+		die colored(['red'], "Error: ") .
+			"No .github/workflows directory found\n" .
+			"Run this from the root of a repository with GitHub Actions.\n";
+	}
+	
+	say colored(['bold cyan'], "GitHub Actions Workflow Analyzer");
+	say colored(['cyan'], "=" x 50);
+	say '';
+	
+	my @all_issues;
+	my $total_workflows = 0;
+	
+	# Analyze each workflow file
+	for my $file (@workflow_files) {
+		$total_workflows++;
+		say colored(['bold'], "📄 Analyzing: ") . $file->basename;
+		
+		my $workflow;
+		eval { $workflow = LoadFile($file) };
+		if ($@) {
+			say colored(['red'], "  ✗ Failed to parse YAML: $@");
+			next;
+		}
+		
+		my @issues = analyze_workflow($workflow, $file->basename);
+		
+		if (@issues) {
+			for my $issue (@issues) {
+				say "  " . colored(['yellow'], "⚠ ") . $issue->{message};
+				if ($issue->{fix}) {
+					say colored(['cyan'], "	 💡 Fix:");
+					for my $line (split /\n/, $issue->{fix}) {
+						say "	 " . $line;
+					}
+				}
+				push @all_issues, { file => $file->basename, %$issue };
+			}
+		} else {
+			say "  " . colored(['green'], "✓ No issues found");
+		}
+		say '';
+	}
+	
+	# Summary
+	say colored(['bold cyan'], "=" x 50);
+	say colored(['bold'], "Summary:");
+	say "  Workflows analyzed: $total_workflows";
+	say "  Total issues found: " . scalar(@all_issues);
+	
+	if (@all_issues) {
+		say '';
+		say colored(['bold yellow'], "Recommendations:");
+		my %by_type;
+		push @{$by_type{$_->{type}}}, $_ for @all_issues;
+		
+		for my $type (sort keys %by_type) {
+			my $count = scalar @{$by_type{$type}};
+			say "  • " . colored(['yellow'], "$type") . 
+				": $count workflow(s) affected";
+		}
+	}
+	
+	exit(@all_issues ? 1 : 0);
 }
 
 sub list_types() {
-    say colored(['bold cyan'], "Available workflow templates:");
-    say "";
-    
-    my %types = list_workflow_types();
-    
-    for my $type (sort keys %types) {
-        say "  " . colored(['green'], sprintf("%-10s", $type)) . 
-            " - $types{$type}";
-    }
-    
-    say "";
-    say "Usage: ghgen generate --type=<type> [--output=<file>]";
-    say "   or: ghgen generate --interactive";
+	say colored(['bold cyan'], "Available workflow templates:");
+	say '';
+	
+	my %types = list_workflow_types();
+	
+	for my $type (sort keys %types) {
+		say "  " . colored(['green'], sprintf("%-10s", $type)) . 
+			" - $types{$type}";
+	}
+	
+	say '';
+	say "Usage: ghgen generate --type=<type> [--output=<file>]";
+	say "   or: ghgen generate --interactive";
 }
 
 sub interactive_select_type() {
-    say colored(['bold cyan'], "GitHub Actions Workflow Generator");
-    say colored(['cyan'], "=" x 50);
-    say "";
-    say "Select a project type:";
-    say "";
-    
-    my @types = qw(node python rust go ruby perl docker static);
-    my %descriptions = (
-        node   => 'Node.js/npm',
-        python => 'Python',
-        rust   => 'Rust',
-        go     => 'Go',
-        ruby   => 'Ruby',
-        perl   => 'Perl',
-        docker => 'Docker',
-        static => 'Static site (GitHub Pages)',
-    );
-    
-    for my $i (0..$#types) {
-        say "  " . colored(['green'], $i + 1) . ". $descriptions{$types[$i]}";
-    }
-    
-    say "";
-    print "Enter number (1-" . scalar(@types) . "): ";
-    chomp(my $choice = <STDIN>);
-    
-    if ($choice =~ /^\d+$/ && $choice >= 1 && $choice <= @types) {
-        return $types[$choice - 1];
-    }
-    
-    die colored(['red'], "Invalid choice\n");
+	say colored(['bold cyan'], "GitHub Actions Workflow Generator");
+	say colored(['cyan'], "=" x 50);
+	say '';
+	say "Select a project type:";
+	say '';
+	
+	my @types = qw(node python rust go ruby perl php java cpp docker static);
+	my %descriptions = (
+		node   => 'Node.js/npm',
+		python => 'Python',
+		rust   => 'Rust',
+		go	 => 'Go',
+		ruby   => 'Ruby',
+		perl   => 'Perl',
+		php	=> 'PHP',
+		java   => 'Java',
+		cpp	=> 'C/C++',
+		docker => 'Docker',
+		static => 'Static site (GitHub Pages)',
+	);
+	
+	for my $i (0..$#types) {
+		say "  " . colored(['green'], sprintf("%2d", $i + 1)) . ". $descriptions{$types[$i]}";
+	}
+	
+	say '';
+	print "Enter number (1-" . scalar(@types) . "): ";
+	chomp(my $choice = <STDIN>);
+	
+	if ($choice =~ /^\d+$/ && $choice >= 1 && $choice <= @types) {
+		return $types[$choice - 1];
+	}
+	
+	die colored(['red'], "Invalid choice\n");
 }
 
 sub auto_detect_with_prompt() {
-    say colored(['bold cyan'], "Auto-detecting project type...");
-    say "";
-    
-    my @detections = detect_project_type();
-    
-    unless (@detections) {
-        say colored(['yellow'], "⚠ ") . "Could not auto-detect project type.";
-        say "";
-        say "Try one of these options:";
-        say "  • " . colored(['cyan'], "ghgen generate --list") . 
-            " - see all available types";
-        say "  • " . colored(['cyan'], "ghgen generate --interactive") . 
-            " - choose interactively";
-        say "  • " . colored(['cyan'], "ghgen generate --type=<type>") . 
-            " - specify type directly";
-        return undef;
-    }
-    
-    # Show top detection
-    my $top = $detections[0];
-    say colored(['green'], "✓ ") . "Detected project type: " . 
-        colored(['bold'], uc($top->{type}));
-    
-    # Show evidence
-    my $indicators = get_project_indicators($top->{type});
-    my @found_indicators;
-    for my $indicator (@$indicators) {
-        # Simple file check (not glob patterns)
-        if ($indicator !~ /[\*\?]/ && path($indicator)->exists) {
-            push @found_indicators, $indicator;
-            last if @found_indicators >= 3;  # Show max 3
-        }
-    }
-    
-    if (@found_indicators) {
-        say colored(['cyan'], "  Evidence: ") . join(', ', @found_indicators);
-    }
-    say "";
-    
-    # Show alternatives if any
-    if (@detections > 1) {
-        say colored(['yellow'], "Other possibilities:");
-        for my $i (1 .. min(2, $#detections)) {
-            say "  • $detections[$i]->{type} (confidence: " . 
-                int($detections[$i]->{score} / $top->{score} * 100) . "%)";
-        }
-        say "";
-    }
-    
-    # Prompt for confirmation
-    print "Generate " . colored(['bold'], uc($top->{type})) . 
-          " workflow? [Y/n]: ";
-    chomp(my $response = <STDIN>);
-    
-    if ($response =~ /^(y|yes|)$/i) {
-        return $top->{type};
-    } elsif ($response =~ /^(n|no)$/i) {
-        say "";
-        say "Cancelled. Use " . colored(['cyan'], "--interactive") . 
-            " to choose manually.";
-        return undef;
-    } else {
-        say colored(['red'], "Invalid response. Cancelled.");
-        return undef;
-    }
+	say colored(['bold cyan'], "Auto-detecting project type...");
+	say '';
+	
+	my @detections = detect_project_type();
+	
+	unless (@detections) {
+		say colored(['yellow'], "⚠ ") . "Could not auto-detect project type.";
+		say '';
+		say "Try one of these options:";
+		say "  • " . colored(['cyan'], "ghgen generate --list") . 
+			" - see all available types";
+		say "  • " . colored(['cyan'], "ghgen generate --interactive") . 
+			" - choose interactively";
+		say "  • " . colored(['cyan'], "ghgen generate --type=<type>") . 
+			" - specify type directly";
+		return undef;
+	}
+	
+	# Show top detection
+	my $top = $detections[0];
+	say colored(['green'], "✓ ") . "Detected project type: " . 
+		colored(['bold'], uc($top->{type}));
+	
+	# Show evidence
+	my $indicators = get_project_indicators($top->{type});
+	my @found_indicators;
+	for my $indicator (@$indicators) {
+		# Simple file check (not glob patterns)
+		if ($indicator !~ /[\*\?]/ && path($indicator)->exists) {
+			push @found_indicators, $indicator;
+			last if @found_indicators >= 3;  # Show max 3
+		}
+	}
+	
+	if (@found_indicators) {
+		say colored(['cyan'], "  Evidence: ") . join(', ', @found_indicators);
+	}
+	say '';
+	
+	# Show alternatives if any
+	if (@detections > 1) {
+		say colored(['yellow'], "Other possibilities:");
+		for my $i (1 .. min(2, $#detections)) {
+			say "  • $detections[$i]->{type} (confidence: " . 
+				int($detections[$i]->{score} / $top->{score} * 100) . "%)";
+		}
+		say '';
+	}
+	
+	# Prompt for confirmation
+	print "Generate " . colored(['bold'], uc($top->{type})) . 
+		  " workflow? [Y/n]: ";
+	chomp(my $response = <STDIN>);
+	
+	if ($response =~ /^(y|yes|)$/i) {
+		return $top->{type};
+	} elsif ($response =~ /^(n|no)$/i) {
+		say '';
+		say "Cancelled. Use " . colored(['cyan'], "--interactive") . 
+			" to choose manually.";
+		return undef;
+	} else {
+		say colored(['red'], "Invalid response. Cancelled.");
+		return undef;
+	}
 }
 
 sub min($a, $b) {
-    return $a < $b ? $a : $b;
+	return $a < $b ? $a : $b;
 }
 
 __END__
@@ -327,11 +330,11 @@ Generate a new GitHub Actions workflow.
 
 Options:
 
-  --auto, -a            Auto-detect project type and prompt for confirmation
-  --type, -t TYPE       Project type (perl, node, python, rust, go, ruby, docker, static)
-  --output, -o FILE     Output file (default: .github/workflows/TYPE-ci.yml)
-  --interactive, -i     Interactive mode to select type
-  --list, -l            List available workflow types
+  --auto, -a			Auto-detect project type and prompt for confirmation
+  --type, -t TYPE	   Project type (perl, node, python, rust, go, ruby, php, java, cpp, docker, static)
+  --output, -o FILE	 Output file (default: .github/workflows/TYPE-ci.yml)
+  --interactive, -i	 Interactive mode to select type
+  --list, -l			List available workflow types
 
 =head2 analyze
 
@@ -381,7 +384,7 @@ Analyze all workflows in current repository:
 
 =head1 AUTHOR
 
-Your Name <your.email@example.com>
+Nigel Horne <njh@nigelhorne.com>
 
 =head1 LICENSE
 
