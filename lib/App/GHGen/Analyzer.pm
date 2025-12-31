@@ -68,7 +68,19 @@ sub analyze_workflow($workflow, $filename) {
             severity => 'high',
             message => "Found " . scalar(@unpinned) . " action(s) using \@master or \@main",
             fix => "Replace \@master/\@main with specific version tags:\n" .
-                   join("\n", map { "       $_" } map { s/\@(master|main)$/\@v4/r } @unpinned[0..min(2, $#unpinned)])
+                   join("\n", map { "       $_" } map { s/\@(master|main)$/\@v5/r } @unpinned[0..min(2, $#unpinned)])
+        };
+    }
+    
+    # Check for outdated action versions
+    my @outdated = find_outdated_actions($workflow);
+    if (@outdated) {
+        push @issues, {
+            type => 'maintenance',
+            severity => 'medium',
+            message => "Found " . scalar(@outdated) . " outdated action(s)",
+            fix => "Update to latest versions:\n" .
+                   join("\n", map { "       $_" } @outdated[0..min(2, $#outdated)])
         };
     }
     
@@ -236,6 +248,39 @@ sub detect_project_type($workflow) {
 
 sub min($a, $b) {
     return $a < $b ? $a : $b;
+}
+
+sub find_outdated_actions($workflow) {
+    my @outdated;
+    my $jobs = $workflow->{jobs} or return @outdated;
+    
+    # Known outdated versions
+    my %updates = (
+        'actions/cache@v4' => 'actions/cache@v5',
+        'actions/cache@v3' => 'actions/cache@v5',
+        'actions/checkout@v5' => 'actions/checkout@v6',
+        'actions/checkout@v4' => 'actions/checkout@v6',
+        'actions/checkout@v3' => 'actions/checkout@v6',
+        'actions/setup-node@v3' => 'actions/setup-node@v4',
+        'actions/setup-python@v4' => 'actions/setup-python@v5',
+        'actions/setup-go@v4' => 'actions/setup-go@v5',
+    );
+    
+    for my $job (values %$jobs) {
+        my $steps = $job->{steps} or next;
+        for my $step (@$steps) {
+            next unless $step->{uses};
+            my $uses = $step->{uses};
+            
+            for my $old (keys %updates) {
+                if ($uses =~ /^\Q$old\E/) {
+                    push @outdated, "$old → $updates{$old}";
+                }
+            }
+        }
+    }
+    
+    return @outdated;
 }
 
 =head1 AUTHOR

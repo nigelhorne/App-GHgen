@@ -122,7 +122,7 @@ sub generate_custom_perl_workflow($opts = {}) {
     $yaml .= "      NO_NETWORK_TESTING: 1\n";
     $yaml .= "      NONINTERACTIVE_TESTING: 1\n";
     $yaml .= "    steps:\n";
-    $yaml .= "      - uses: actions/checkout\@v4\n\n";
+    $yaml .= "      - uses: actions/checkout\@v6\n\n";
     
     $yaml .= "      - name: Setup Perl\n";
     $yaml .= "        uses: shogo82148/actions-setup-perl\@v1\n";
