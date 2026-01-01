@@ -4,8 +4,6 @@
 .github/workflows/perl-ci.yml
 action.yml
 bin/ghgen
-bin/ghgen-analyze
-bin/ghgen-generator
 Changes
 cpanfile
 lib/App/GHGen.pm
