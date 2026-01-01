@@ -1,5 +1,7 @@
 package App::GHGen;
+
 use v5.36;
+use strict;
 use warnings;
 
 our $VERSION = '0.01';
@@ -15,24 +17,24 @@ App::GHGen - Comprehensive GitHub Actions workflow generator, analyzer, and opti
     ghgen generate --type=perl              # Generate Perl workflow
     ghgen generate --type=perl --customize  # Interactive customization
     ghgen generate --interactive            # Choose type interactively
-    
+
     # Analyze workflows
     ghgen analyze                           # Analyze for issues
     ghgen analyze --fix                     # Auto-fix issues
     ghgen analyze --estimate                # Show cost estimates
-    
+
     # List available types
     ghgen generate --list
 
 =head1 DESCRIPTION
 
-App::GHGen is a comprehensive toolkit for creating, analyzing, and optimizing GitHub Actions workflows. 
-It combines intelligent project detection, workflow generation, security analysis, cost optimization, 
+App::GHGen is a comprehensive toolkit for creating, analyzing, and optimizing GitHub Actions workflows.
+It combines intelligent project detection, workflow generation, security analysis, cost optimization,
 and automatic fixing into a single powerful tool.
 
 =head2 Key Features
 
-=encoding UTF-8
+=encoding utf-8
 
 =over 4
 
@@ -80,13 +82,13 @@ The fastest way to get started:
 
     # Navigate to your project
     cd my-project/
-    
+
     # Auto-detect and generate workflow
     ghgen generate --auto
-    
+
     # Review the generated workflow
     cat .github/workflows/*-ci.yml
-    
+
     # Commit and push
     git add .github/workflows/
     git commit -m "Add CI workflow"
@@ -126,10 +128,10 @@ If multiple types are detected, it shows alternatives:
 
     ✓ Detected project type: PERL
       Evidence: cpanfile, lib, t
-    
+
     Other possibilities:
       • docker (confidence: 65%)
-    
+
     Generate PERL workflow? [Y/n]:
 
 =head2 Specify Project Type
@@ -150,12 +152,12 @@ Generate for a specific language:
 Choose from a menu of available types:
 
     ghgen generate --interactive
-    
+
     GitHub Actions Workflow Generator
     ==================================================
-    
+
     Select a project type:
-    
+
       1. Node.js/npm
       2. Python
       3. Rust
@@ -164,7 +166,7 @@ Choose from a menu of available types:
       6. Perl
       7. Docker
       8. Static site (GitHub Pages)
-    
+
     Enter number (1-8):
 
 =head2 Interactive Customization
@@ -192,7 +194,7 @@ For Perl, you'll be asked:
 Example session:
 
     === Workflow Customization: PERL ===
-    
+
     Perl Versions to Test:
     Which Perl versions?
     (Enter numbers separated by commas, or 'all')
@@ -201,17 +203,17 @@ Example session:
       ✓ 3. 5.36
         4. 5.34
         5. 5.32
-    
+
     Enter choices [1,2,3]: 1,2,3
-    
+
     Operating Systems:
     Which operating systems?
       ✓ 1. ubuntu-latest
       ✓ 2. macos-latest
       ✓ 3. windows-latest
-    
+
     Enter choices [1,2,3]: 1,2
-    
+
     Enable Perl::Critic? [Y/n]: y
     Enable test coverage? [Y/n]: y
 
@@ -222,9 +224,9 @@ Each language has its own customization options appropriate to its ecosystem.
 See all supported project types:
 
     ghgen generate --list
-    
+
     Available workflow templates:
-    
+
       node       - Node.js/npm projects with testing and linting
       python     - Python projects with pytest and coverage
       rust       - Rust projects with cargo, clippy, and formatting
@@ -241,10 +243,10 @@ See all supported project types:
 Scan all workflows in your repository for issues:
 
     ghgen analyze
-    
+
     GitHub Actions Workflow Analyzer
     ==================================================
-    
+
     📄 Analyzing: perl-ci.yml
       ⚠ No dependency caching found - increases build times
          💡 Fix:
@@ -252,12 +254,12 @@ Scan all workflows in your repository for issues:
            with:
              path: ~/perl5
              key: ${{ runner.os }}-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
-      
+
       ⚠ Found 2 outdated action(s)
          💡 Fix:
          Update to latest versions:
            actions/cache@v4 → actions/cache@v5
-    
+
     ==================================================
     Summary:
       Workflows analyzed: 1
@@ -318,15 +320,15 @@ The analyzer checks for:
 Automatically apply fixes to your workflows:
 
     ghgen analyze --fix
-    
+
     GitHub Actions Workflow Analyzer
     (Auto-fix mode enabled)
     ==================================================
-    
+
     📄 Analyzing: perl-ci.yml
       ⚙ Applying 3 fix(es)...
       ✓ Applied 3 fix(es)
-    
+
     ==================================================
     Summary:
       Workflows analyzed: 1
@@ -372,37 +374,37 @@ The auto-fix feature is safe:
 See your current CI usage and potential savings:
 
     ghgen analyze --estimate
-    
+
     GitHub Actions Workflow Analyzer
     (Cost estimation mode)
     ==================================================
-    
+
     📊 Estimating current CI usage...
-    
+
     Current Monthly Usage:
       Total CI minutes: 1,247
       Billable minutes: 0 (after 2,000 free tier)
       Estimated cost: $0.00
-    
+
     Per-Workflow Breakdown:
       Perl CI      840 min/month (100 runs × 8.4 min/run)
       Node.js CI   300 min/month ( 60 runs × 5.0 min/run)
       Docker       107 min/month ( 20 runs × 5.4 min/run)
-    
+
     📄 Analyzing: node-ci.yml
       ⚠ No dependency caching found
       ⚠ No concurrency group defined
-    
+
     ==================================================
     Summary:
       Workflows analyzed: 3
       Total issues found: 2
-    
+
     💰 Potential Savings:
       With recommended changes: 647 CI minutes/month
       Reduction: -600 minutes (48%)
       Cost savings: $4.80/month (for private repos)
-    
+
       Breakdown:
         • Adding dependency caching: ~75 min/month
         • Adding concurrency controls: ~525 min/month
@@ -433,16 +435,16 @@ Automatically comment on PRs that modify workflows:
 
     # .github/workflows/ghgen-comment.yml
     name: Analyze Workflows
-    
+
     on:
       pull_request:
         paths:
           - '.github/workflows/**'
-    
+
     permissions:
       contents: read
       pull-requests: write
-    
+
     jobs:
       analyze:
         runs-on: ubuntu-latest
@@ -456,16 +458,16 @@ Automatically comment on PRs that modify workflows:
 This posts a comment like:
 
     ## 🔍 GHGen Workflow Analysis
-    
+
     | Category | Count | Auto-fixable |
     |----------|-------|--------------|
     | ⚡ Performance | 2 | 2 |
     | 🔒 Security | 1 | 1 |
-    
+
     ### 💰 Potential Savings
     - ⏱️ Save **~650 CI minutes/month**
     - 💵 Save **~$5/month** (private repos)
-    
+
     ### 💡 How to Fix
     Run locally: `ghgen analyze --fix`
 
@@ -475,16 +477,16 @@ Automatically create PRs with fixes on a schedule:
 
     # .github/workflows/ghgen-autofix.yml
     name: Weekly Workflow Optimization
-    
+
     on:
       schedule:
         - cron: '0 9 * * 1'  # Monday 9am UTC
       workflow_dispatch:     # Manual trigger
-    
+
     permissions:
       contents: write
       pull-requests: write
-    
+
     jobs:
       optimize:
         runs-on: ubuntu-latest
@@ -504,15 +506,15 @@ Fail builds if workflow issues are found:
 
     # .github/workflows/ghgen-check.yml
     name: Workflow Quality Check
-    
+
     on:
       pull_request:
         paths:
           - '.github/workflows/**'
-    
+
     permissions:
       contents: read
-    
+
     jobs:
       check:
         runs-on: ubuntu-latest
@@ -840,13 +842,13 @@ Caching is based on dependency files:
 
     # In your new Perl module directory
     cd My-Module/
-    
+
     # Create cpanfile
     echo "requires 'perl', '5.036';" > cpanfile
-    
+
     # Auto-detect and generate
     ghgen generate --auto
-    
+
     # Review and commit
     cat .github/workflows/perl-ci.yml
     git add .github/workflows/perl-ci.yml cpanfile
@@ -858,16 +860,16 @@ Caching is based on dependency files:
     # Clone project
     git clone https://github.com/user/project.git
     cd project/
-    
+
     # Analyze with cost estimation
     ghgen analyze --estimate
-    
+
     # Review suggestions, then fix
     ghgen analyze --fix
-    
+
     # Review changes
     git diff .github/workflows/
-    
+
     # Commit improvements
     git add .github/workflows/
     git commit -m "Optimize CI: add caching, update actions, add permissions"
@@ -877,13 +879,13 @@ Caching is based on dependency files:
 
     # Project with both Node.js and Docker
     cd fullstack-app/
-    
+
     # Generate Node.js workflow
     ghgen generate --type=node --output=.github/workflows/frontend-ci.yml
-    
+
     # Generate Docker workflow
     ghgen generate --type=docker --output=.github/workflows/backend-build.yml
-    
+
     # Analyze both
     ghgen analyze
 
@@ -891,7 +893,7 @@ Caching is based on dependency files:
 
     # Interactive customization
     ghgen generate --type=perl --customize
-    
+
     # Choose:
     # Perl versions: 5.36, 5.38, 5.40 (skip older)
     # OS: Ubuntu, macOS (skip Windows if not needed)
@@ -905,12 +907,12 @@ Add workflow quality checks to your CI:
 
     # .github/workflows/ci-quality.yml
     name: CI Quality Check
-    
+
     on:
       pull_request:
         paths:
           - '.github/workflows/**'
-    
+
     jobs:
       check:
         runs-on: ubuntu-latest
@@ -1009,10 +1011,10 @@ B<Solution:>
     # Install build tools first
     # On Debian/Ubuntu:
     sudo apt-get install build-essential
-    
+
     # On macOS:
     xcode-select --install
-    
+
     # Then retry
     cpanm App::GHGen
 
@@ -1031,7 +1033,7 @@ B<Solution:>
 
     # Specify type explicitly
     ghgen generate --type=perl
-    
+
     # Or ensure indicator files exist
     touch cpanfile  # for Perl
     touch package.json  # for Node.js
@@ -1044,7 +1046,7 @@ B<Solution:>
 
     # Validate YAML syntax first
     yamllint .github/workflows/*.yml
-    
+
     # Fix YAML errors, then retry
     ghgen analyze
 
@@ -1106,7 +1108,7 @@ B<Solution:>
       schedule:
         - cron: '0 9 * * 1'
       workflow_dispatch:  # Allows manual trigger
-    
+
     # Test with manual trigger first
 
 =head1 DEPENDENCIES
@@ -1198,25 +1200,25 @@ Contributions are welcome! GHGen is open source and hosted on GitHub.
     # Fork and clone
     git clone https://github.com/YOUR-USERNAME/ghgen.git
     cd ghgen
-    
+
     # Install dependencies
     cpanm --installdeps .
-    
+
     # Run tests
     prove -lr t/
-    
+
     # Make changes
     # ... edit files ...
-    
+
     # Test your changes
     perl -Ilib bin/ghgen generate --type=perl
     prove -lr t/
-    
+
     # Commit and push
     git add .
     git commit -m "Description of changes"
     git push origin your-branch
-    
+
     # Open pull request on GitHub
 
 =head2 Adding a New Language
@@ -1234,8 +1236,6 @@ To add support for a new language:
 5. Update documentation
 
 =head1 SUPPORT
-
-This module is provided as-is without any warranty.
 
 =head2 Getting Help
 
@@ -1258,6 +1258,12 @@ For commercial support, consulting, or custom development, contact the author.
 Nigel Horne E<lt>njh@nigelhorne.comE<gt>
 
 L<https://github.com/nigelhorne>
+
+=head1 CONTRIBUTORS
+
+Thanks to all contributors who have helped improve GHGen!
+
+See L<https://github.com/nigelhorne/ghgen/graphs/contributors>
 
 =head1 COPYRIGHT AND LICENSE
 

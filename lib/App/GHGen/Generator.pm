@@ -22,7 +22,7 @@ App::GHGen::Generator - Generate GitHub Actions workflows
 =head1 SYNOPSIS
 
     use App::GHGen::Generator qw(generate_workflow);
-    
+
     my $yaml = generate_workflow('perl');
     path('.github/workflows/ci.yml')->spew_utf8($yaml);
 
@@ -48,9 +48,9 @@ sub generate_workflow($type) {
         docker => \&_generate_docker_workflow,
         static => \&_generate_static_workflow,
     );
-    
-    return undef unless exists $generators{$type};
-    return $generators{$type}->();
+
+	return undef unless exists $generators{$type};
+	return $generators{$type}->();
 }
 
 =head2 list_workflow_types()
@@ -89,12 +89,12 @@ sub get_workflow_description($type) {
 # Private workflow generators
 
 sub _generate_perl_workflow() {
-    # Try to detect requirements from project
-    my $reqs = detect_perl_requirements();
-    
-    # Use detected min version or default to 5.36
-    my $min_version = $reqs->{min_version} // '5.36';
-    
+	# Try to detect requirements from project
+	my $reqs = detect_perl_requirements();
+
+	# Use detected min version or default to 5.36
+	my $min_version = $reqs->{min_version} // '5.36';
+
     # Generate custom workflow with detected settings
     return generate_custom_perl_workflow({
         min_perl_version => $min_version,
