@@ -1,4 +1,4 @@
-spackage App::GHGen;
+package App::GHGen;
 use v5.36;
 use warnings;
 
