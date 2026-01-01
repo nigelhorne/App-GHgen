@@ -322,7 +322,9 @@ sub _detect_cpp() {
 
 =head1 AUTHOR
 
-Nigel Horne <njh@nigelhorne.com>
+Nigel Horne E<lt>njh@nigelhorne.comE<gt>
+
+L<https://github.com/nigelhorne>
 
 =head1 LICENSE
 

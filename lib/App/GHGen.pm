@@ -1235,6 +1235,8 @@ To add support for a new language:
 
 =head1 SUPPORT
 
+This module is provided as-is without any warranty.
+
 =head2 Getting Help
 
 =over 4
@@ -1256,12 +1258,6 @@ For commercial support, consulting, or custom development, contact the author.
 Nigel Horne E<lt>njh@nigelhorne.comE<gt>
 
 L<https://github.com/nigelhorne>
-
-=head1 CONTRIBUTORS
-
-Thanks to all contributors who have helped improve GHGen!
-
-See L<https://github.com/nigelhorne/ghgen/graphs/contributors>
 
 =head1 COPYRIGHT AND LICENSE
 

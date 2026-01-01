@@ -327,7 +327,9 @@ sub get_latest_version($action) {
 
 =head1 AUTHOR
 
-Your Name <your.email@example.com>
+Nigel Horne E<lt>njh@nigelhorne.comE<gt>
+
+L<https://github.com/nigelhorne>
 
 =head1 LICENSE
 

@@ -4,9 +4,9 @@ use warnings;
 
 use Exporter 'import';
 our @EXPORT_OK = qw(
-    generate_markdown_report
-    generate_github_comment
-    estimate_savings
+	generate_markdown_report
+	generate_github_comment
+	estimate_savings
 );
 
 our $VERSION = '0.01';
@@ -18,7 +18,7 @@ App::GHGen::Reporter - Generate reports for GitHub integration
 =head1 SYNOPSIS
 
     use App::GHGen::Reporter qw(generate_github_comment);
-    
+
     my $comment = generate_github_comment(\@issues, \@fixes);
 
 =head1 FUNCTIONS
@@ -30,15 +30,15 @@ Generate a markdown report of issues and fixes.
 =cut
 
 sub generate_markdown_report($issues, $fixes = []) {
-    my $report = "# GHGen Workflow Analysis\n\n";
-    
-    my $total_issues = scalar @$issues;
-    my $total_fixes = scalar @$fixes;
-    
+	my $report = "# GHGen Workflow Analysis\n\n";
+
+	my $total_issues = scalar @$issues;
+	my $total_fixes = scalar @$fixes;
+
     $report .= "## Summary\n\n";
     $report .= "- 📊 **Issues found:** $total_issues\n";
     $report .= "- ✅ **Fixes applied:** $total_fixes\n\n";
-    
+
     if (@$issues) {
         # Group by type
         my %by_type;
@@ -231,18 +231,20 @@ sub get_type_emoji($type) {
 }
 
 sub get_severity_badge($severity) {
-    my %badges = (
-        high   => '🔴',
-        medium => '🟡',
-        low    => '🟢',
-    );
-    
-    return $badges{$severity} // '⚪';
+	my %badges = (
+		high   => '🔴',
+		medium => '🟡',
+		low    => '🟢',
+	);
+
+	return $badges{$severity} // '⚪';
 }
 
 =head1 AUTHOR
 
-Your Name <your.email@example.com>
+Nigel Horne E<lt>njh@nigelhorne.comE<gt>
+
+L<https://github.com/nigelhorne>
 
 =head1 LICENSE
 

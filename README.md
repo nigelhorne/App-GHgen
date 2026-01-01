@@ -953,6 +953,8 @@ To add support for a new language:
 
 # SUPPORT
 
+This module is provided as-is without any warranty.
+
 ## Getting Help
 
 - [GitHub Issues](https://github.com/nigelhorne/ghgen/issues) - Bug reports and feature requests
