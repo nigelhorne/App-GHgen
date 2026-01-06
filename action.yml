@@ -158,7 +158,7 @@ runs:
     
     - name: Create PR with fixes
       if: inputs.create-pr == 'true' && steps.analyze.outputs.fixes > 0
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ inputs.github-token }}
         commit-message: 'chore: optimize GitHub Actions workflows'
