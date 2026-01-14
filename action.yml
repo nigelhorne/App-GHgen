@@ -139,7 +139,7 @@ runs:
     - name: Comment on PR
       if: github.event_name == 'pull_request' && inputs.mode == 'comment' && steps.analyze.outputs.issues > 0
       id: comment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github-token }}
         script: |
