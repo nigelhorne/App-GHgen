@@ -80,31 +80,31 @@ Get the description for a specific workflow type.
 =cut
 
 sub get_workflow_description($type) {
-    my %types = list_workflow_types();
-    return $types{$type};
+	my %types = list_workflow_types();
+	return $types{$type};
 }
 
 # Private workflow generators
 
 sub _generate_perl_workflow() {
-    # Try to detect requirements from project
-    my $reqs = detect_perl_requirements();
-    
-    # Use detected min version or default to 5.36
-    my $min_version = $reqs->{min_version} // '5.36';
-    
-    # Generate custom workflow with detected settings
-    return generate_custom_perl_workflow({
-        min_perl_version => $min_version,
-        max_perl_version => '5.40',
-        os => ['macos-latest', 'ubuntu-latest', 'windows-latest'],
-        enable_critic => 1,
-        enable_coverage => 1,
-    });
+	# Try to detect requirements from project
+	my $reqs = detect_perl_requirements();
+
+	# Use detected min version or default to 5.36
+	my $min_version = $reqs->{min_version} // '5.36';
+
+	# Generate custom workflow with detected settings
+	return generate_custom_perl_workflow({
+		min_perl_version => $min_version,
+		max_perl_version => '5.40',
+		os => ['macos-latest', 'ubuntu-latest', 'windows-latest'],
+		enable_critic => 1,
+		enable_coverage => 1,
+	});
 }
 
 sub _generate_node_workflow() {
-    return <<'YAML';
+	return <<'YAML';
 ---
 name: Node.js CI
 

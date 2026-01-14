@@ -28,7 +28,7 @@ my %opts = (
 );
 
 GetOptions(
-	'help|h'	  => \$opts{help},
+	'help|h'	=> \$opts{help},
 	'version|v'   => \$opts{version},
 	'type|t=s'	=> \$opts{type},
 	'output|o=s'  => \$opts{output},

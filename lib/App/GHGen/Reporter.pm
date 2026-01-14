@@ -157,7 +157,7 @@ sub generate_github_comment($issues, $fixes = [], $options = {}) {
         
         $comment .= "Or enable auto-fix in this action:\n\n";
         $comment .= "```yaml\n";
-        $comment .= "- uses: your-org/ghgen-action\@v1\n";
+        $comment .= "- uses: nigelhorne/ghgen-action\@v1\n";
         $comment .= "  with:\n";
         $comment .= "    auto-fix: true\n";
         $comment .= "    create-pr: true\n";
