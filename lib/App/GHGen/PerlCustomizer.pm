@@ -4,6 +4,8 @@ use v5.36;
 use strict;
 use warnings;
 
+use Path::Tiny;
+
 use Exporter 'import';
 our @EXPORT_OK = qw(
 	detect_perl_requirements
@@ -19,7 +21,7 @@ App::GHGen::PerlCustomizer - Customize Perl workflows based on project requireme
 =head1 SYNOPSIS
 
     use App::GHGen::PerlCustomizer qw(detect_perl_requirements);
-    
+
     my $requirements = detect_perl_requirements();
     # Returns: { min_version => '5.036', has_cpanfile => 1, ... }
 
@@ -32,21 +34,20 @@ Detect Perl version requirements from cpanfile, Makefile.PL, or dist.ini.
 =cut
 
 sub detect_perl_requirements() {
-    my %reqs = (
-        min_version => undef,
-        has_cpanfile => 0,
-        has_makefile_pl => 0,
-        has_dist_ini => 0,
-        has_build_pl => 0,
-    );
-    
-    # Check for dependency files
-    use Path::Tiny;
-    $reqs{has_cpanfile} = path('cpanfile')->exists;
-    $reqs{has_makefile_pl} = path('Makefile.PL')->exists;
-    $reqs{has_dist_ini} = path('dist.ini')->exists;
-    $reqs{has_build_pl} = path('Build.PL')->exists;
-    
+	my %reqs = (
+		min_version => undef,
+		has_cpanfile => 0,
+		has_makefile_pl => 0,
+		has_dist_ini => 0,
+		has_build_pl => 0,
+	);
+
+	# Check for dependency files
+	$reqs{has_cpanfile} = path('cpanfile')->exists;
+	$reqs{has_makefile_pl} = path('Makefile.PL')->exists;
+	$reqs{has_dist_ini} = path('dist.ini')->exists;
+	$reqs{has_build_pl} = path('Build.PL')->exists;
+
     # Try to detect minimum Perl version
     if ($reqs{has_cpanfile}) {
         my $content = path('cpanfile')->slurp_utf8;
@@ -54,7 +55,7 @@ sub detect_perl_requirements() {
             $reqs{min_version} = $1;
         }
     }
-    
+
     if (!$reqs{min_version} && $reqs{has_makefile_pl}) {
         my $content = path('Makefile.PL')->slurp_utf8;
         if ($content =~ /MIN_PERL_VERSION\s*=>\s*['"]([0-9.]+)['"]/) {
@@ -97,7 +98,9 @@ sub generate_custom_perl_workflow($opts = {}) {
     }
     
     my $yaml = "---\n";
+    $yaml .= '# Created by ' . __PACKAGE__ . "\n";
     $yaml .= "name: Perl CI\n\n";
+    $yaml .= 
     $yaml .= "'on':\n";
     $yaml .= "  push:\n";
     $yaml .= "    branches:\n";
@@ -214,27 +217,27 @@ sub generate_custom_perl_workflow($opts = {}) {
         $yaml .= "          cover\n";
         $yaml .= "        shell: bash\n";
     }
-    
-    return $yaml;
+
+	return $yaml;
 }
 
 sub _get_perl_versions($min, $max) {
-    # All available Perl versions in descending order
-    my @all_versions = qw(5.40 5.38 5.36 5.34 5.32 5.30 5.28 5.26 5.24 5.22);
-    
-    # Normalize version strings for comparison
-    my $min_normalized = _normalize_version($min);
-    my $max_normalized = _normalize_version($max);
-    
-    my @selected;
-    for my $version (@all_versions) {
-        my $v_normalized = _normalize_version($version);
-        if ($v_normalized >= $min_normalized && $v_normalized <= $max_normalized) {
-            push @selected, $version;
-        }
-    }
-    
-    return reverse @selected;  # Return in ascending order
+	# All available Perl versions in descending order
+	my @all_versions = qw(5.40 5.38 5.36 5.34 5.32 5.30 5.28 5.26 5.24 5.22);
+
+	# Normalize version strings for comparison
+	my $min_normalized = _normalize_version($min);
+	my $max_normalized = _normalize_version($max);
+
+	my @selected;
+	for my $version (@all_versions) {
+		my $v_normalized = _normalize_version($version);
+		if ($v_normalized >= $min_normalized && $v_normalized <= $max_normalized) {
+			push @selected, $version;
+		}
+	}
+
+	return reverse @selected;  # Return in ascending order
 }
 
 sub _normalize_version($version) {
