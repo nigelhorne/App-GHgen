@@ -62,8 +62,8 @@ sub detect_perl_requirements() {
             $reqs{min_version} = $1;
         }
     }
-    
-    return \%reqs;
+
+	return \%reqs;
 }
 
 =head2 generate_custom_perl_workflow($options)
@@ -83,12 +83,12 @@ If perl_versions is provided, it takes precedence over min/max versions.
 =cut
 
 sub generate_custom_perl_workflow($opts = {}) {
-    my $min_version = $opts->{min_perl_version} // '5.36';
-    my $max_version = $opts->{max_perl_version} // '5.40';
-    my @os = @{$opts->{os} // ['ubuntu-latest', 'macos-latest', 'windows-latest']};
-    my $enable_critic = $opts->{enable_critic} // 1;
-    my $enable_coverage = $opts->{enable_coverage} // 1;
-    
+	my $min_version = $opts->{min_perl_version} // '5.36';
+	my $max_version = $opts->{max_perl_version} // '5.40';
+	my @os = @{$opts->{os} // ['ubuntu-latest', 'macos-latest', 'windows-latest']};
+	my $enable_critic = $opts->{enable_critic} // 1;
+	my $enable_coverage = $opts->{enable_coverage} // 1;
+
     # Generate Perl version list - use explicit list if provided, otherwise min/max
     my @perl_versions;
     if ($opts->{perl_versions} && @{$opts->{perl_versions}}) {
@@ -99,8 +99,8 @@ sub generate_custom_perl_workflow($opts = {}) {
     
     my $yaml = "---\n";
     $yaml .= '# Created by ' . __PACKAGE__ . "\n";
+
     $yaml .= "name: Perl CI\n\n";
-    $yaml .= 
     $yaml .= "'on':\n";
     $yaml .= "  push:\n";
     $yaml .= "    branches:\n";
@@ -110,7 +110,7 @@ sub generate_custom_perl_workflow($opts = {}) {
     $yaml .= "    branches:\n";
     $yaml .= "      - main\n";
     $yaml .= "      - master\n\n";
-    
+ 
     $yaml .= "concurrency:\n";
     $yaml .= "  group: \${{ github.workflow }}-\${{ github.ref }}\n";
     $yaml .= "  cancel-in-progress: true\n\n";
@@ -204,7 +204,7 @@ sub generate_custom_perl_workflow($opts = {}) {
         $yaml .= "          perlcritic --severity 3 lib/ || true\n";
         $yaml .= "        shell: bash\n\n";
     }
-    
+ 
     if ($enable_coverage) {
         my $latest = $perl_versions[-1];
         $yaml .= "      - name: Test coverage\n";
