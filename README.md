@@ -43,7 +43,7 @@ and automatic fixing into a single powerful tool.
 
 ## From Source
 
-    git clone https://github.com/nigelhorne/ghgen.git
+    git clone https://github.com/nigelhorne/App-GHGen.git
     cd ghgen
     cpanm --installdeps .
     perl Makefile.PL
@@ -353,7 +353,7 @@ Automatically comment on PRs that modify workflows:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v6
-          - uses: nigelhorne/ghgen-action@v1
+          - uses: nigelhorne/App-GHGen@v1
             with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               mode: comment
@@ -395,7 +395,7 @@ Automatically create PRs with fixes on a schedule:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v6
-          - uses: nigelhorne/ghgen-action@v1
+          - uses: nigelhorne/App-GHGen@v1
             with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               auto-fix: true
@@ -423,7 +423,7 @@ Fail builds if workflow issues are found:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v6
-          - uses: nigelhorne/ghgen-action@v1
+          - uses: nigelhorne/App-GHGen@v1
             id: check
           - name: Fail if issues found
             if: steps.check.outputs.issues-found > 0
@@ -886,6 +886,8 @@ Review the remaining suggestions and apply manually.
 
 # SEE ALSO
 
+- Test Coverage Report [Test Dashboard](https://nigelhorne.github.io/App-GHGen/coverage/)
+
 ## GitHub Actions Documentation
 
 - [Workflow Syntax](https://docs.github.com/actions/reference/workflow-syntax-for-github-actions)
@@ -905,7 +907,7 @@ Contributions are welcome! GHGen is open source and hosted on GitHub.
 
 ## Ways to Contribute
 
-- **Report bugs** - [GitHub Issues](https://github.com/nigelhorne/ghgen/issues)
+- **Report bugs** - [GitHub Issues](https://github.com/nigelhorne/App-GHGen/issues)
 - **Suggest features** - Open an issue with your idea
 - **Add language support** - Contribute new workflow templates
 - **Improve documentation** - Fix typos, add examples
@@ -955,8 +957,8 @@ To add support for a new language:
 
 ## Getting Help
 
-- [GitHub Issues](https://github.com/nigelhorne/ghgen/issues) - Bug reports and feature requests
-- [GitHub Discussions](https://github.com/nigelhorne/ghgen/discussions) - Questions and community
+- [GitHub Issues](https://github.com/nigelhorne/App-GHGen/issues) - Bug reports and feature requests
+- [GitHub Discussions](https://github.com/nigelhorne/App-GHGen/discussions) - Questions and community
 - Email: [njh@nigelhorne.com](mailto:njh@nigelhorne.com)
 
 ## Commercial Support
@@ -973,11 +975,11 @@ Nigel Horne <njh@nigelhorne.com>
 
 Thanks to all contributors who have helped improve GHGen!
 
-See [https://github.com/nigelhorne/ghgen/graphs/contributors](https://github.com/nigelhorne/ghgen/graphs/contributors)
+See [https://github.com/nigelhorne/App-GHGen/graphs/contributors](https://github.com/nigelhorne/App-GHGen/graphs/contributors)
 
 # COPYRIGHT AND LICENSE
 
-Copyright 2025 Nigel Horne.
+Copyright 2025-2026 Nigel Horne.
 
 Usage is subject to license terms.
 

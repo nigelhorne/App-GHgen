@@ -1149,6 +1149,12 @@ B<Solution:>
 
 =head1 SEE ALSO
 
+=over 4
+
+=item * Test Coverage Report L<Test Dashboard|https://nigelhorne.github.io/App-GHGen/coverage/>
+
+=back
+
 =head2 GitHub Actions Documentation
 
 =over 4
@@ -1267,7 +1273,7 @@ See L<https://github.com/nigelhorne/App-GHGen/graphs/contributors>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2025 Nigel Horne.
+Copyright 2025-2026 Nigel Horne.
 
 Usage is subject to license terms.
 
