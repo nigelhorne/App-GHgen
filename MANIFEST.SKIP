@@ -14,8 +14,13 @@
 ^Build\.bat$
 ^MYMETA\.
 
+# Avoid Devel::Cover and Devel::CoverX::Covered files.
+\bcover_db\b
+\bcover_html\b
+\bcoverage_history\b
+\bcovered\b
+
 # Testing
-^cover_db/
 ^nytprof
 \.tar\.gz$
 
