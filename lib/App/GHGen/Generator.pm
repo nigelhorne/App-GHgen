@@ -1,14 +1,18 @@
 package App::GHGen::Generator;
+
 use v5.36;
+
+use strict;
 use warnings;
+
 use Path::Tiny;
 use App::GHGen::PerlCustomizer qw(detect_perl_requirements generate_custom_perl_workflow);
 
 use Exporter 'import';
 our @EXPORT_OK = qw(
-    generate_workflow
-    list_workflow_types
-    get_workflow_description
+	generate_workflow
+	list_workflow_types
+	get_workflow_description
 );
 
 our $VERSION = '0.01';
@@ -47,8 +51,8 @@ sub generate_workflow($type) {
         static => \&_generate_static_workflow,
     );
 
-    return undef unless exists $generators{$type};
-    return $generators{$type}->();
+	return undef unless exists $generators{$type};
+	return $generators{$type}->();
 }
 
 =head2 list_workflow_types()

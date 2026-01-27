@@ -58,7 +58,7 @@ and automatic fixing into a single powerful tool.
 
 =head1 INSTALLATION
 
-=head2 From CPAN (when published)
+=head2 From CPAN
 
     cpanm App::GHGen
 
@@ -1151,7 +1151,7 @@ B<Solution:>
 
 =over 4
 
-=item * Test Coverage Report L<Test Dashboard|https://nigelhorne.github.io/App-GHGen/coverage/>
+=item * L<Test Coverage Report|https://nigelhorne.github.io/App-GHGen/coverage/>
 
 =back
 

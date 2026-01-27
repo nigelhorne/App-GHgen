@@ -886,7 +886,7 @@ Review the remaining suggestions and apply manually.
 
 # SEE ALSO
 
-- Test Coverage Report [Test Dashboard](https://nigelhorne.github.io/App-GHGen/coverage/)
+- [Test Coverage Report](https://nigelhorne.github.io/App-GHGen/coverage/)
 
 ## GitHub Actions Documentation
 
