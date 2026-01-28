@@ -14,7 +14,7 @@ our @EXPORT_OK = qw(
 	customize_workflow
 );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -412,12 +412,12 @@ sub _customize_docker() {
     );
     say '';
 
-    my $branches = prompt_text(
-        "Branches to run on (comma-separated)",
-        'main'
-    );
-    $config{branches} = [split /,\s*/, $branches];
-    say '';
+	my $branches = prompt_text(
+		"Branches to run on (comma-separated)",
+		'main'
+	);
+	$config{branches} = [split /,\s*/, $branches];
+	say '';
 
 	return \%config;
 }

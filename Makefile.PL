@@ -13,14 +13,13 @@ if($^O eq 'darwin') {
 }
 
 WriteMakefile(
-    NAME           => 'App::GHGen',
+	NAME           => 'App::GHGen',
     AUTHOR         => 'Nigel Horne <njh@nigelhorne.com>',
     VERSION_FROM   => 'lib/App/GHGen.pm',
     ABSTRACT_FROM  => 'lib/App/GHGen.pm',
 	((defined($ExtUtils::MakeMaker::VERSION) && ($ExtUtils::MakeMaker::VERSION >= 6.3002))
 		? ('LICENSE'=> 'GPL')
 		: ()),
-    MIN_PERL_VERSION => '5.036',
 
 	PREREQ_PM => {
 		'YAML::XS'       => 0,
@@ -48,13 +47,15 @@ WriteMakefile(
 				type => 'git',
 				url => 'git://github.com/nigelhorne/App-GHGen.git',
 				web => 'https://github.com/nigelhorne/App-GHGen',
-				# license  => 'http://dev.perl.org/licenses/',
+				# license    => 'http://dev.perl.org/licenses/',
 			}, bugtracker => {
-				mailto => 'bug-App-GHGen@rt.cpan.org',
-				url => 'https://github.com/nigelhorne/App-GHGen/issues',
-				# web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=App-GHGen',
-				web => 'https://github.com/nigelhorne/App-GHGen/issues'
+				web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=App-GHGen',
+				url => 'https://rt.cpan.org/Public/Dist/Display.html?Name=App-GHGen',
+				# web => 'https://github.com/nigelhorne/App-GHGen/issues',
+				# url => 'https://github.com/nigelhorne/App-GHGen/issues',
+				mailto => 'bug-App-GHGen@rt.cpan.org'
 			}
 		},
 	},
+	MIN_PERL_VERSION => '5.036'
 );

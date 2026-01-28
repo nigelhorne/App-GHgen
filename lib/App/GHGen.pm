@@ -4,7 +4,7 @@ use v5.36;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -1242,6 +1242,20 @@ To add support for a new language:
 5. Update documentation
 
 =head1 SUPPORT
+
+This module is provided as-is without any warranty.
+
+Please report any bugs or feature requests to C<bug-app-ghgen at rt.cpan.org>,
+or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-GHGen>.
+I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc App::GHGen
+
+You can also look for information at:
 
 =head2 Getting Help
 
