@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v6
       
       - name: Check workflows
-        uses: nigelhorne/ghgen-action@v1
+        uses: nigelhorne/ghgen-action@v2
         with:
           mode: check
       
