@@ -37,10 +37,11 @@ App::GHGen - Comprehensive GitHub Actions workflow generator, analyzer, and opti
 
 =head1 DESCRIPTION
 
-GHGen Workflow Analyzer is the all‑in‑one solution for keeping your GitHub Actions fast, secure, and effortlessly up‑to‑date.
+GHGen Workflow Analyzer is the all-in-one solution for keeping your GitHub Actions fast,
+secure, and effortlessly up-to-date.
 It automatically scans your workflows for performance bottlenecks,
 outdated actions,
-missing security permissions, and wasted CI minutes—then applies safe, intelligent fixes or opens a clean pull request with improvements.
+missing security permissions, and wasted CI minutes-then applies safe, intelligent fixes or opens a clean pull request with improvements.
 Whether you maintain a single project or dozens,
 GHGen saves time, reduces CI costs, and enforces modern best practices without manual effort.
 Developers choose it because it turns workflow maintenance from a chore into a fully automated,
