@@ -33,6 +33,8 @@ inc/
 /MANIFEST.bak
 /pm_to_blib
 /*.zip
+*.swp
+.DS_Store
 
 # Carton/Carmel
 /local/

@@ -11,7 +11,6 @@ use Exporter 'import';
 our @EXPORT_OK = qw(
 	generate_workflow
 	list_workflow_types
-	get_workflow_description
 );
 
 our $VERSION = '0.03';
@@ -75,17 +74,6 @@ sub list_workflow_types() {
         docker => 'Docker image build and push workflow',
         static => 'Static site deployment to GitHub Pages',
     );
-}
-
-=head2 get_workflow_description($type)
-
-Get the description for a specific workflow type.
-
-=cut
-
-sub get_workflow_description($type) {
-	my %types = list_workflow_types();
-	return $types{$type};
 }
 
 # Private workflow generators
